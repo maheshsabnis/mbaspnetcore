@@ -1,0 +1,148 @@
+﻿# ASP.NET Core 6
+
+1. Eco-System For Building Modern Web Apps
+    - Object Models
+        - Dependency Injection Container (DI) is In-Built
+            - THis registers all dependencies as 'services' in the Application
+                - Database Connections
+                - Session
+                - Identity
+                - Caching
+                - Cross-Origin-Resource-Sharing (CORS)
+                - Object Model for
+                    - Razor Views
+                    - MVC Controllers, Views, and API Controllers
+                    - API Controllers
+                - Custom Services
+                - ... and many more
+        - Middlewares
+            - Objects used for Managing HTTP Request Processing
+                - Exception Management
+                - Session Management
+                - CORS Management
+                - Identityt Management
+                - Routing
+                - Accessong Local Files on Server
+                - Executing the COntrollers or Pages
+# ASP.NET Core MVC Project Structure (.NET 6) (.NET Core 1.x to .NET 5, we had Startup.cs and Program.cs. The Startup.cs file is deprecated)
+    - Program.cs
+        - Entry-Point for the Application
+            - Loading the Application Configuration
+            - Registering Services as Dependency in DI Container
+            - Registring Middlewares and Managing HTTP Request Pipeline
+    - appsettings.json
+        - Defines Application Level Configirations
+            - e.g.
+                - Hosting
+                - Db Connection Strings
+                - Custom Configuration Settings e.g. Tokens
+    - Models
+        - Contains The Logical Object Model of Applications
+            - Entity Classes
+            - ViewModel Classes
+            - Data Access Layer
+            - Business Logic Layer
+            - Other Utilities
+                - Custom Extensions
+                - Data Re-Orgnization classes  
+    - Controllers
+        - These classes are used to accept HTTP Requests with data
+        - Update Models
+        - Decides which View is Responded
+    - Views
+        - Contains Razor Views (.cshtml), these are MVC Views used for User Interaction
+    - wwwroot
+        - Contains Files those are delivered to Browser e.g. JavaScript, CSS, HTML, Images, etc.
+# Programming with ASP.NET Core MVC
+- Understand and Create Models
+    - Data Access Layer
+        - ADO.NET
+        - EntityFrameworkCore
+            - Object Relational Mapping (ORM)
+    - Business Layer
+    - Utilities        
+- Understand and Create Controllers
+    - Action Mathods
+    - Exception Management
+    - Filters
+    - Security
+    - The 'IActionResult' inetrface
+    - Understanding Request Processing
+    - Middlewares
+- Understand and Create Views
+    - User Interface
+        - Scaffolding
+            - Model Bindings
+        - HTML Tag Helpers
+
+# ADO.NET
+
+- High-Speed Data Access Technology for Microsoft .NET Apps
+- The 'System.Data', the Assembly (a Package) for Data Access Object Model
+    - The 'System.Data.SqlClient', a Package for SQL Server
+- Various Classes
+    - SqlConnection
+        - Used to Manage teh Database Connection
+        - Open(), OpenAsync(), methdos to Open Connection With Database
+        - Close(), CloseAsync(), methods to Close Database Connection
+        - ConnectionString property, that accepts Connection String as input
+            - Examples of Connection String
+            - Case 1: Using Windows Admin user to connect to Database
+                - Data Source=[SERVER-NAME];Initial Catalog=[DATABASE-NAME];Integrated Security=SSPI
+                    - SERVER-NAME: The Name of the MAchine where the SQL Server Instance is Running
+                        - localhost (if using local machine) OR IP ADDRESS OR . (if using the Local Machine)
+                - e.g.
+                    - Data Source=.;Initial Catalog=Companyl;Integrated Security=SSPI;
+            - Case 2: Using SQL Server Authentication
+                - Data Source=[SERVER-NAME];Initial Catalog=[DATABASE-NAME];User Id=[SQL-SERVER-USER-ID];Password=[Password];
+                - e.g.
+                    - Data Source=.;Initial Catalog=Company;User Id=sa;Password=Pass@word;
+            - Follow the SWebSite
+                - https://www.connectionstrings.com/microsoft-data-sqlclient/
+                
+    - SqlCommand 
+        - Used to Perform DB Transactions (Read/Write) Operations with Database over the Connection
+        - The 'Connection' property, this accepts the Connection object to Database over which the Read/Write Operations are performed
+        - CommandType
+            - Property that represents the Type of Statement to be executed on the Database Server
+            - CommandType.Text, accepts a string which contains Query e.g. Select, Insert, Update, and Delete
+            - CommandType.StoredProcedute, accept the Stored Procedure name
+                - CommandText="Stored-Procedure-Name"
+        - Execute Methods
+            - ExecuteReader(), ExecuteReaderAsync()
+                - Returns an Instance of 'SqlDataReader' class when the CommandText is 'Select' Statement
+                - SqlDataReader: The Read-Only-Forward-Only Cursor, that reads data from First Record and Move to next till last record
+                    - The 'Read()' method to start reading
+                    - The 'Close()' method to CLose the Reader
+            - ExecuteNonQuery(), ExecuteNotQueryAsync()
+                - USed when the ComamndText is DML Statement (Insert, Update and Delete)
+                - This method will return a 'Non-Zero' number that represents no. of records affected
+            - ExecuteScalar(), ExecuteScalarAsync()
+                - Used when the Select Query returns a Single Value e.g. Min, Max, Average, etc.
+                - We can use while working with Stored Procs
+    - SqlParameter
+        - The class that represent the Parameter passed to
+            - Parameterized Query
+            - Stored Proc
+        - Properties
+            - ParameterName
+                - Actual NAme of the Paremeter passed to a Query or SP
+            - Direction
+                - Input or Output Parameter
+            - DbType
+                - SQL Data Type
+            - Size
+                - MUST be set for String Parameter
+            - Value
+                 - Value to be passed to the Parameter   
+    - Pseduo Code
+        - Create an Instance of SqlConnection by using the Connection String
+        - Open the Connection
+        - Defien an instance of SqlCommand
+        - Pass connection object to the Connection Property of Command class
+        - Set the CommandType for The Command Instance as Text or Stored Procedure
+        - Set the CommandText property of the Command Instance as either Query or Stored Procedure name dependning on the CommandType
+        - Invoke an Execute Method based on CommandText
+        - If the SqlDataReader as return from Command's execute method then use 'Read()' method to read data and then 'Close()' reader
+        - If the DML Operations then cehck for Non-Zero value from the Execute method of Command object
+        - Close() the connection 
