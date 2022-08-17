@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // The 'Services' is of the type 'IServiceCollection' which is DI Container
 // to register all Services
+// The DI For the MVC COntroller and View
 
 builder.Services.AddControllersWithViews();
 
