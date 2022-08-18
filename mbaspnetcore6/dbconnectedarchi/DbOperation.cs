@@ -25,6 +25,7 @@ namespace dbconnectedarchi
                 Conn.Open();
                 // 2. The Command Object Instance
                 Cmd = new SqlCommand();
+                // Over then connection to DB perform Tansactions
                 Cmd.Connection = Conn;
                 Cmd.CommandType = CommandType.Text;
                 Cmd.CommandText = "Select * from Department";

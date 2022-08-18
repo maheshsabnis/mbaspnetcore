@@ -14,6 +14,21 @@ var builder = WebApplication.CreateBuilder(args);
 // to register all Services
 // The DI For the MVC COntroller and View
 
+
+// Registration of the Data Access Lyer in The DI Container Provided
+// by ASP.NET Core
+
+// Registered the DepartmentDataAcess
+// The class which will be injected using IDataAccess<Department,int>
+// will be actually injected usign an Instance of DepartmentDataAccess class
+// because the DI Container is already registered using
+// the DepartmentDataAccess
+builder.Services.AddScoped<IDataAccess<Department,int>, DepartmentDataAccess>();
+
+// Also Register all Repositoiry services in DI Container
+builder.Services.AddScoped<IServiceRepository<Department, int>, DepartmentRepository>();
+
+// Service registered for Request Processing for MVC and API Controller and MVC Views
 builder.Services.AddControllersWithViews();
 
 
@@ -38,7 +53,9 @@ app.UseRouting();
 app.UseAuthorization();
 // Pass the Request to MVC Controllers
 // That matches with the ControllerName in Route Table
-// Default is HomeController class and its method is Index 
+// Default is HomeController class and its method is Index
+// The 'id' is an Optional Parameter, used in case of Edit and Delete
+// Or Whichever an action method that accepts an 'id' parameter
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

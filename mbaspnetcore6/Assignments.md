@@ -78,5 +78,14 @@ Select * from Department;
                 - Search Employee By Designation starts with the Critera value
             - If ColumnName == "DeptName" and Criteria == 'A'
                 - Search Employee By DeptName starts with the Critera value
-        
+
+# Date:18-Aug-2022
+0. Review a Solution and if any questions then ask
+1. CReate a DataAccess class for EMployees
+2. Register Empoloyee Data Access in DI for ASp.NET COre Project
+3. Create Repository for Employee
+4. Register Employee Repository in DI
+5. Create EmployeeController with Action Methods for CRUD Operations
+6. Create Views for CRUD for EMployee
+7. Make sure that the Link for EMployee to be present on Landing Page from _Layout.cshtml         
             

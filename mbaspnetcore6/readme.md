@@ -145,4 +145,124 @@
         - Invoke an Execute Method based on CommandText
         - If the SqlDataReader as return from Command's execute method then use 'Read()' method to read data and then 'Close()' reader
         - If the DML Operations then cehck for Non-Zero value from the Execute method of Command object
-        - Close() the connection 
+        - Close() the connection
+- Practices for Building Data Access Layer with ADO.NET
+    - Create a Generic Interface that will be containing declarations for methods commonly used for CRUD Operations
+    - Define Separate Layers (.dll) files for Entity Classes, DAL, and Interface Contract
+
+# ASP.NET Core 6 As a Technology
+1. Depedency Injection
+    - Managed using 'IServiceCollection' interface
+        - This will be used to Register External Dependencies in DI Container of WebApplicationBuilder 
+    - The 'ServiceDescrioptor' class is used to provode the Dependency Container with Following Methods
+            - AddScoped()
+                - The Object will be live for the Current Requested Session (Log-In), and this obejct will be destroyed, when the session is over or closed (Log-Out)
+                - The Object will be available across all HTTP Requests under that current Session
+                - Recommended in case of Razor Views Apps (Web App) and MVC Apps
+                - Statefull
+                    - Maintain the state of the object across all requests for an active session
+                - Generally Following Objects are Scopped
+                    - Database Access Objects
+                    - Objects for Session Based Logging
+                    - Identity Objects (aka Security)
+            - AddSingleton()
+                - The Object will be live throughout the life of the Application
+                - It will be created once and will be destroyed only when the Application is Unloded from the web server or Crashed
+                - One object will be shared across all Sessions
+                - Application Level Logging Objects MUST be Sigleton
+                - Global State or Shared object across all sessions
+            - AddTransient()
+                - The Object will be live only for the request
+                - This will be killed once the request is over
+                - Use this carefully for all suces object those are lightweight or does not have any heavyload dependencies
+                - Stateless
+                    - Really Loightweight
+                - E.g.
+                    - A In-Memeory Collection that is sued only for a specific request
+
+- MVC Controllers
+    - They are Objects those are responsible to Accept HTTP Requests and Process them
+    - HTTP GET, POST, PUT, and DELETE
+    - Based on requests the 'Action Method (?)' will be executed and the Model will be updated and the View will be returned
+        - Action Method: A Method from a controller class that is Mapped with HTTP Request
+            - This action method performs following
+                  - Accept the Data Posted by the client in Request using Http Post and Put request
+                  - Validates the Data (Provided the Validation Rukes are applied)
+                  - Call the Business Logic from Models
+                  - Handle the Exception if the Logical Error Occured and then Response the Error Page
+                  - If The Method is Successfull then Returns a View or Redirect to other Action Method from Same Controller or redirect to action method of Different Controller
+            - Action Method returna a Common COntract named 'IActionResult'
+                - The IActionResult can be
+                    - ViewResult: Returns a View
+                    - RedirectToActionREsult: Return to Action method of same controller ot Different Controller
+                    - JsonResult: Returns JSON
+                    - OKResult: Returns OK() as a Stastus (API Reponses)
+                    - OkObjectResult: Return HTTP Status Code with Data as JSON (API Reponses)
+                    - NotFound, NoContent, etc. (API Reponses)
+            - All Action Methods are HttpGet by default, to use them for Http Post / Http Put / Http Delete, we need to apply the [HttpPost] attribute, [HttpPut], [HttpDelete]
+
+    - The 'Controller' is a Base class for MVC Controller and this class has following
+        - Having its base class as 'ControllerBase'
+            - Common Base for MVC COntroller and ApiController
+            - Properties for
+                - HTTP Request and Response
+                - Valdating Models Received using HTTP POST and POST Requests
+                - 
+        - Contains method for
+            - Returning View as a reponse
+                - Page View
+                - Partial View
+            - Returning JSON as a Response
+            - Action Execution
+        - Properties
+            - ViewData
+                - Pass data from Controller to View Other Than Model
+                - Of the Type ViewDataDictionary 
+            - TempData
+                - Pass Data Across Controllers
+            - ViewBag
+                - A Dynamic Object that will be Casted to 'ViewDataDictionary'
+- Process for Adding View
+     - If using Visual Studio 2022 on WIndows, the Right-Click on Action Method and select Add view
+            - In VS 2022 on Window, the Add View Scaffolder WIndow will be shown which will take the View Name as the name of the Action Method in whichw we have Right-CLicked to add View. For thios window Select View Template(?) and The select the Model class
+            - View Template, ready to scaffold templates to show UI
+                - List
+                    - For Index() action method
+                    - LIst ot IEnumerable of Model class to show data in List (or HTML Table)
+                - Create
+                    - Accepts an EMoty Model class to create a View with TextBoxes to add da a values to create new record
+                - Edit
+                    - Accepts a Model class that is to be Updated
+                - Delete
+                    - Acccpets a Mdoel class which is to be deleted 
+                - Details
+                    - Accepts a Model class which is ReadOnly
+                - Empty
+                    - Provides facility to developers to create views as per their needs
+                - Empty Without Model
+                    - EMpty for HTML and JavaScript 
+     - If using Vidsual Studio 2022 for Mac OR Visual Studio Code, then Create a Folder in the Views folder with Same name as Name of the Controller for which the Views are added and then add views in this folder
+- @model IEnumerable<Department>
+     - This indicates the type if data that is passed to View
+
+- RazorPage<TModel>, the base class for Razor View in ASP.NET Core MVC
+     - Properties
+          - Model
+                - The model Data passed to View using @model directive
+                - The model Data passed to View while scaffolding (VS 2022 on WIndows)
+                - Using this Model propwrty, properties of model classed passed to the View can be access on the View for 'Model Binding'
+                - The 'Html' is a property of View Base class tthat is used to access HTML Helper Methods on View to Generate HTML Output
+    - Tag Helpers
+          - Lightweight attribute classes those are applied on HTML elements to define its behavior
+          - They are classes those are used to help HTML standard elements to Show Data, Accept data, and generate HTML Dynamically
+          - e.g.
+               - asp-for: Applied on HTML input:text elememt so that it can accept data from end-user
+               - asp-controller: applied on Anchro tag 'a' to navigate to the controller
+               - asp-action: To navigate to action method of the controller, applied on Anchor tag
+               - asp-items: Accept the IEnumerable<T> as input parameter to generate HTML Dynamically
+               - ...and many more
+```` html
+    <input type="text" asp-for="Model.DeptNo"/>
+````
+    - Show and accept DeptNo
+                                 
