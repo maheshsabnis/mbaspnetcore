@@ -87,5 +87,19 @@ Select * from Department;
 4. Register Employee Repository in DI
 5. Create EmployeeController with Action Methods for CRUD Operations
 6. Create Views for CRUD for EMployee
-7. Make sure that the Link for EMployee to be present on Landing Page from _Layout.cshtml         
+7. Make sure that the Link for EMployee to be present on Landing Page from _Layout.cshtml
+
+# Date: 22-Aug-2022
+1. Create a Controller that will have an Index  action method which will return a List of Departments and List of EMployees to a View i.e. Index.chstml
+2. Show Departments and Employees on the Index.cshtml in a Table. Each Row of teh table which is showing List of Deparments must have a Link with text as 'ShowEmployees'. When this link is clicked, the Table shown List of Employees should show Only employees from the selected Department
+
+3. Create a Custom Validator class that will check of the DeptNo is Already present in Department Table, if present then after clicking the Save button on Create.cshtml view, the error message MUST be shown
+
+4. Modify Index.cshtml for Idnex() action Method of Employee Controller to Show DeptName in Employees table instead of showing the DeptNo
+
+5. Modify the Create.chtml to show DeptName as RadioButton instaed of shown the HTML select element with Department Names in it
+
+6. IMP: Validate the Logic of new Employee creation in such a way that, if the DeptName selected for Creating new EMployee is already full with its capacity the employee showuld not be added, instaed an Error Message saying "The Capaity for Selected DeptName is already full" must be displayed on the Create.cshtml view  
+
+
             

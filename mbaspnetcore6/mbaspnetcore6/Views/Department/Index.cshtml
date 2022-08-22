@@ -48,6 +48,11 @@
                        <!--HTML Helper Method that will navigate to Delete Action Method and will pass the DeptNo as Route Parameter-->
                        @Html.ActionLink("Delete", "Delete", new { id = dept.DeptNo })
                    </td>
+
+                   <td>
+                       <!--HTML Helper Method that will navigate to Delete Action Method and will pass the DeptNo as Route Parameter-->
+                       @Html.ActionLink("Show Employees", "ShowEmployees", new { id = dept.DeptNo })
+                   </td>
                </tr>      
              }
         </tbody>

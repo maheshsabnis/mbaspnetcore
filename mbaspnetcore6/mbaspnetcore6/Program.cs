@@ -24,9 +24,14 @@ var builder = WebApplication.CreateBuilder(args);
 // because the DI Container is already registered using
 // the DepartmentDataAccess
 builder.Services.AddScoped<IDataAccess<Department,int>, DepartmentDataAccess>();
+builder.Services.AddScoped<IDataAccess<Employee, int>, EmployeeDataAccess>();
+
 
 // Also Register all Repositoiry services in DI Container
 builder.Services.AddScoped<IServiceRepository<Department, int>, DepartmentRepository>();
+
+builder.Services.AddScoped<IServiceRepository<Employee, int>, EmployeeRepository>();
+
 
 // Service registered for Request Processing for MVC and API Controller and MVC Views
 builder.Services.AddControllersWithViews();

@@ -14,6 +14,8 @@ namespace mbaspnetcore6.Controllers
     {
         private readonly IServiceRepository<Department, int> deptRepo;
 
+       
+
         /// <summary>
         /// Injection
         /// </summary>
@@ -54,9 +56,18 @@ namespace mbaspnetcore6.Controllers
         {
             try
             {
-                var response = deptRepo.CreateRecord(dept);
-                // If the Add is successful then Redirect to the 'Idnex' Action Method
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+
+                    var response = deptRepo.CreateRecord(dept);
+                    // If the Add is successful then Redirect to the 'Idnex' Action Method
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    // Stey on the Same Page
+                    return View(dept);
+                }
             }
             catch (Exception ex)
             {
@@ -67,6 +78,8 @@ namespace mbaspnetcore6.Controllers
         public IActionResult Edit(int id)
         {
             var respose = deptRepo.GetRecord(id);
+            ViewBag.Message = "The Edit View";
+            //ViewBag.ErrorMessages = new List<string>();
             // returna View with the data toi be edited
             return View(respose.Record);
         }
@@ -76,9 +89,21 @@ namespace mbaspnetcore6.Controllers
         {
             try
             {
-                var response = deptRepo.UpdateRecord(id,dept);
-                // If the Add is successful then Redirect to the 'Idnex' Action Method
-                return RedirectToAction("Index");
+                var errorMessage = DepartmentValidator.ValidationMessages(dept);
+                if (errorMessage.Count() > 0)
+                {
+                    // passing additional data to View
+                    ViewBag.ErrorMessages = errorMessage;
+                    return View(dept);
+                }
+                else
+                {
+                    var response = deptRepo.UpdateRecord(id, dept);
+                    // If the Add is successful then Redirect to the 'Idnex' Action Method
+                    return RedirectToAction("Index");
+                }
+
+                
             }
             catch (Exception ex)
             {
@@ -91,6 +116,14 @@ namespace mbaspnetcore6.Controllers
             var respose = deptRepo.DeleteRecord(id);
             // returna View with the data toi be edited
             return RedirectToAction("Index");
+        }
+
+        public IActionResult ShowEmployees(int id)
+        {
+            // Store the DeptNo in TempData
+            TempData["DeptNo"] = id;
+            // Navigate to an Index() action method of the Employee Controller
+            return RedirectToAction("Index", "Employee");
         }
     }
 }

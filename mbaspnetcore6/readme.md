@@ -265,4 +265,44 @@
     <input type="text" asp-for="Model.DeptNo"/>
 ````
     - Show and accept DeptNo
-                                 
+
+# MVC Programming Object Model
+
+1. Handling Model Validations in POST Request
+    - System.ComponentModel.DataAnnotation.dll
+        - Assembly that contains 'ValidationAttribute' abstract class
+            - This class has a 'IsValid()' method which is overriden for writing Validation Logic for Model Properties
+        - THis is ised to define Model Class Propeties Validation Classes
+            - RequiredAttribute
+            - ComparerAttribute
+            - StringLengthAttribute,
+            - ... various other attribute classes
+    - If the Entities are in seperate dll file, then add System.ComponentModel.DataAnnotation package in it to use validation classes
+    - Use the 'ModelState' property of ControllerBase class to validated the Posted model as folows
+```` csharp
+    if(ModelState.IsValid){.....}
+````
+    - We can also add a custom Vadlition attribute by deriving the class from 'ValidationAttribute' class and overriding an 'IsValid()' method
+        - NOTE: For Custom Validators the Page will be posted back to the server
+    - The Entity class for Validations can be changed using ValidationAttribute if the sourece code access is available, other it is better to write a custom Validator
+2. Customization of View by passing data to it other than Model Properties data
+    - Use ViewData or ViewBag to pass such additional data
+    - Please Note ****
+        - If a View is accepting a ViewBag or ViewData, then all Action Methods returning to that view MUST pass the VeiwBag or ViewData otherwise the View will crash
+    - Since a View can accept only one Model object, to pass the data in the form ParentChild models, use one of the following
+        - Use ViewBag and pass data to View
+            - If passing the List of Parent Model preeprties to the Child view and wants to show it in the DropDoenList or HTML select element, then use the 'Selectist<T>' object  provided by MVC
+                    - Microsoft.AspNetCore.Mvc.Rendering  
+        - Create a ViewModel class
+
+3. Sharing Data Across Controllers by Maintaining Data Out-of-The-Controller Object
+    - Hosting Env. i.e. The  dotnet.exe will be responsible for storing thios data on sever
+    - Two Ways
+        - TempData
+            - TempDataProvider object
+            - Maintain the state untill the Target Controller is not reading data from TempData
+            - Once the Target COntroller Reads the data from TempData, it will be cleaned from the TempData
+            - This is recommended for Sharing data across 2 COntrollers
+            - *** Once aan Action Method from Target Controller reads the data, its will be cleaned from TempData so other action methods of target controller will not be able to read data
+                - TO make sure that the Data from TempData to be availble across all action method of Target Controller use 'TempData.Keep()' method explicitly  
+        - Session State
