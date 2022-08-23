@@ -102,4 +102,19 @@ Select * from Department;
 6. IMP: Validate the Logic of new Employee creation in such a way that, if the DeptName selected for Creating new EMployee is already full with its capacity the employee showuld not be added, instaed an Error Message saying "The Capaity for Selected DeptName is already full" must be displayed on the Create.cshtml view  
 
 
+# Date: 23-Aug-2022
+
+1. After SHowing Error Message on the Error View, when we navigate back to the Create/Edit pages for COntrollers, these pages MUST show the data that has caused errors
+    - HINT: Session State
+2. Modify the LogFilter for Logging the Execution Information for all controllers and their Action Methods in the Database
+        - Create a LogData Table Table in Database as
+            - LogId int Identity Primary Key
+            - LogDate DateTime Not Null
+            - ControllerName varchar(100) Not Null,
+            - ActionName varchar(100) Not Null
+        - Create an Entity Layer for  LogData Table
+        - Create a Data Access Layer
+        - Register the Dal DI Container of MVC App
+        - Inject the DataAceess Layer in LogFilterAttribute class     
+
             
