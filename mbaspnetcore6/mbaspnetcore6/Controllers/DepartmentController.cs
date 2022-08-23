@@ -10,6 +10,8 @@ namespace mbaspnetcore6.Controllers
     /// <summary>
     /// Inject the Repository using Constructor Injection
     /// </summary>
+    /// Apply the Action Filter
+  //  [LogFilter]
     public class DepartmentController : Controller
     {
         private readonly IServiceRepository<Department, int> deptRepo;
@@ -30,8 +32,26 @@ namespace mbaspnetcore6.Controllers
         /// <returns></returns>
         public IActionResult Index()
         {
-            var response = deptRepo.GetRecords();
-            return View(response.Records);
+            try
+            {
+
+                var response = deptRepo.GetRecords();
+                return View(response.Records);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                // Return an Error Page
+
+                // Hard-Coded Values for Controller and Action Method
+                // These MUST be eliminated
+                return View("Error", new ErrorViewModel()
+                {
+                     ErrorMessage = ex.Message,
+                     ControllerName = "Department",
+                     ActionName = "Index"
+                });
+            }
         }
 
         /// <summary>
@@ -58,8 +78,11 @@ namespace mbaspnetcore6.Controllers
             {
                 if (ModelState.IsValid)
                 {
-
+                    if (dept.Capacity < 0)
+                        throw new Exception("Capacity cannot be -ve");
                     var response = deptRepo.CreateRecord(dept);
+
+                    
                     // If the Add is successful then Redirect to the 'Idnex' Action Method
                     return RedirectToAction("Index");
                 }
@@ -71,7 +94,15 @@ namespace mbaspnetcore6.Controllers
             }
             catch (Exception ex)
             {
-                return View(dept);
+                // Retrning Error Page by Eliminating
+                // Hard-Coding
+                // the 'controller' and 'action' are comming from Route Expression, refer Program.cs
+                return View("Error", new ErrorViewModel()
+                {
+                    ErrorMessage = ex.Message,
+                    ControllerName = this.RouteData.Values["controller"].ToString(),
+                    ActionName = this.RouteData.Values["action"].ToString()
+                });
             }
         }
 
@@ -120,8 +151,17 @@ namespace mbaspnetcore6.Controllers
 
         public IActionResult ShowEmployees(int id)
         {
+            // Using the Session State
+
+            HttpContext.Session.SetInt32("DeptNo", id);
+
+            var response = deptRepo.GetRecord(id);
+
+            HttpContext.Session.SetObject<Department>("Dept",response.Record);
+
+
             // Store the DeptNo in TempData
-            TempData["DeptNo"] = id;
+          //  TempData["DeptNo"] = id;
             // Navigate to an Index() action method of the Employee Controller
             return RedirectToAction("Index", "Employee");
         }

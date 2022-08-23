@@ -33,8 +33,26 @@ builder.Services.AddScoped<IServiceRepository<Department, int>, DepartmentReposi
 builder.Services.AddScoped<IServiceRepository<Employee, int>, EmployeeRepository>();
 
 
+// Adding Session Service
+// Tell Server that Session will be stored
+// in the Memory of the Hosting Env.
+builder.Services.AddDistributedMemoryCache();
+// The Session Condiguration
+// The Session will be closed if
+// After the First Request to Server
+// the Server does not receive any request for next 20 mins
+builder.Services.AddSession(options => {
+    options.IdleTimeout = TimeSpan.FromMinutes(20);
+
+});
+
+
 // Service registered for Request Processing for MVC and API Controller and MVC Views
-builder.Services.AddControllersWithViews();
+// Lets Configure the Action Filter for the MVC COntrollers
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add(new LogFilterAttribute());
+});
 
 
 // Application Builder for Registering Middlewares for
@@ -54,6 +72,13 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 // Contains a Route Table
 app.UseRouting();
+
+// COnfigure the Session Middleware
+// THis will use Configuration for session
+// from Session Service from DI COntainer
+app.UseSession();
+
+
 // For Role Based Security
 app.UseAuthorization();
 // Pass the Request to MVC Controllers

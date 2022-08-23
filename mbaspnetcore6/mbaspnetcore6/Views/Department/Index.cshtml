@@ -25,8 +25,12 @@
             </tr>
         </thead>
         <tbody>
+            @if (Model != null)
+                {
+
+
             @foreach (var dept in Model)
-             {
+                {
                <tr>
                    <td>
                        @dept.DeptNo
@@ -54,8 +58,17 @@
                        @Html.ActionLink("Show Employees", "ShowEmployees", new { id = dept.DeptNo })
                    </td>
                </tr>      
-             }
+                }
+                }
         </tbody>
+        <tfoot>
+            <tr>
+                <td>
+                    @ViewBag.ErrorMessage
+                </td>
+            </tr>
+        </tfoot>
     </table>
 }
+                
 

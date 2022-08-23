@@ -20,9 +20,12 @@ namespace mbaspnetcore6.Controllers
 
         public IActionResult Index()
         {
-            ResponseStatus<Employee> response = new ResponseStatus<Employee>(); 
+            ResponseStatus<Employee> response = new ResponseStatus<Employee>();
             // 1. Read data from TempData["DeptNo"]
-            var deptno = Convert.ToInt32(TempData["DeptNo"]);
+            // var deptno = Convert.ToInt32(TempData["DeptNo"]);
+            var deptno = HttpContext.Session.GetInt32("DeptNo");
+            // Retrieving data from Session State
+            var dept = HttpContext.Session.GetObject<Department>("Dept");
             if (deptno > 0)
             {
                 // Read only those Employees from deptno
@@ -30,7 +33,7 @@ namespace mbaspnetcore6.Controllers
                 response.Records = employees;
 
                 // Keep Data in TempData
-                TempData.Keep();
+               // TempData.Keep();
 
                 return View(response.Records);
             }
