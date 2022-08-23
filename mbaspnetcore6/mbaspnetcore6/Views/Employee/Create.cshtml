@@ -38,9 +38,18 @@
                 <label asp-for="DeptNo" class="control-label"></label>
                  @*<input asp-for="DeptNo" class="form-control" />*@
                 <!--Gemerate select with Data of DeptName-->
-                <select asp-for="DeptNo" class="form-control"
+                @*<select asp-for="DeptNo" class="form-control"
                         asp-items="@depts"
-                        ></select>
+                        ></select>*@
+            <div class="form-group">
+                @foreach (var item in depts)
+                {
+                    <label asp-for="@item.Text">@item.Text</label>
+                    <input type="radio" asp-for="DeptNo"  value="@item.Value" />
+                }
+
+            </div>
+                
                  <span asp-validation-for="DeptNo" class="text-danger"></span>
             </div>
             
