@@ -366,5 +366,142 @@
             - ResultExecutedContext
                 - Class that is derived from FilterContext
                 - Has an access to RouteData
-                - MAke the Result Object Ready for Response    
-                
+                - MAke the Result Object Ready for Response
+    - Custom Exception Filter
+        - Used to handle Exceptions in "MVC Controllers" while an Action method is executed
+        - ExceptionFilterAttribute class
+            - BAse clas for the Exception Filter
+            - The 'OnException(ExceptionContext)' method
+                - ExceptionContext
+                    - The class that takes care of all exceptions those are raised while Controller Request processing
+                        - The 'Excpetion' property of the type Exception that listen to the exception
+                        - ExceptionHandled : A Bool property, this is used to handle the exception and stop the action method execution and will start exedcuting the excpetion handling logic
+                        - The 'Result' property of the type IActionResult, this represents the response that is returned to the request
+                            - If using ViewResult then
+                                   - CReate a ViewDataDictionary to pass data to View using ViewData
+                                   - If using a Standard Error.cshtml view, then please do not modify the ErrorViewModel because the 'Model' property that is used to pass to ViewResult is read-only
+```` csharp
+public ViewDataDictionary (IModelMetadataProvider metadataProvider, ModelStateDictionary modelState)
+	{
+		throw null;
+	}
+````
+    - The ViewDataDictionary does not have default constructor
+    - To CReate its instance we need 'IModelMetadataProvider' and 'ModelStateDictionary'
+        - IModelMetadataProvider: Contract that is used  to provide a ModelMetadata instance in the HTTP Request Pipeline for the View     
+
+        - The 'ModelMetadata' is thye Model Object that is used while processing the Request for the View
+        - The 'IModelMetadataProvider', is already resolved in the HTTP Pipeline using 'builder.Services.AddControllersWithView()' by MvcOptions  class
+        - 'ModelStateDictionary' object reopresents the 'ModelState' this is the Proeprty available in The ControllerBase class and it will also be resolved by 'builder.Services.AddControllersWithView()' by MvcOptions  class
+
+- ASO.NET Core Security
+    - Microsoft Identity Platform
+        - On-Presmises Security Verification
+        - Azure Cloud Security Verification
+        - Token Based Authentication
+        - Customized Authentication Based on Requirements
+    - The Default use of EntityFrameworkCore (EF Core)
+            - Object Relational Mapping (ORM)
+                - EF Core Tool
+                    - dotnet ef CLI for working with EF Core
+                    - Install the Tool Globally
+                        - dotnet tool install --global dotnet-ef
+            - Connects to the Database and performs Following
+                - Generate Models aka Entity Classees from Database Design
+                    - Database-First Approach
+                - Generate Database Tables from Model classes aka Entity Classes
+                    - Code-First Approach
+                - Provides 'DbContext' class for performing CRUD Operations
+            - Dependenies Packages to USe EF Core
+                - Microsoft.EntityFramewortkCore
+                - Microsoft.EntityFramewortkCore.Relational
+                - Microsoft.EntityFramewortkCore.SqlServer
+                - Microsoft.EntityFramewortkCore.Design
+                    - Generate Classes from Tables
+                    - Generate Tables from Classes
+                - Microsoft.EntityFramewortkCore.Tools
+                    - Manage the Dotnet EF Command Line Tools
+                - PAckage Can be installed using dotnet CLI using the Following COmmand
+                    - dotnet add package [PACKAGE-NAME] -v [VERSION]
+                    - e.g.
+                        - dotnet add package Microsoft.EntityFrameworkCore -v 6.0.0
+
+            - Install all Dependency PAckages for EF Core and Run the following Command
+                - Database-First, generate Models from Database
+
+                    - dotnet ef dbcontext scaffold "Connection-String" Microsodft.EntityFramewortkCore.SqlServer -o Models
+
+                        - This will connect to database based on Connsection-String and will generate Model classes in the 'Models' folder
+
+                        - e.g.
+                            - dotnet ef dbcontext scaffold "Data Source=127.0.0.1;Initial Catalog=UCompany;USer Id=sa;Password=MyPass@word" MiCrosoft.EntityFrameworkCore.SqlServer -o Models
+
+                - Code-First, generate database from Model classes
+                    - define a Connection string in appSettings.json
+                    - Create Model Classes with at least One Public property applied with atribute as [Key], this will be  primary Key
+                    - CReate a Class derived from 'DbContext' that will have public Model propertes of the Type DbSet<T>, T is Model class
+                        - e.g. If Model class is Department with [Key]DeptNo, the property eill be
+                            - public DbSet<Department> Departments {get;set;}
+
+                    - Generate a Script to create Tables
+
+                         - dotnet ef migrations add [MIGRATION-NAME] -c [NAMESPACE.DBCONTEXT-CLASS-NAME]
+                            - -c is dbcontext class
+    
+                         - e.g.
+                            - dotnet ef migrations add firstMigration -c MyNamespoace.MyDbContext
+                            - dotnet ef migrations add firstMigration -c MVC_Code_First.Models.UCompanyContext
+
+
+                    - Generate Database from Scipts
+
+                         - dotnet ef database update -c [NAMESPACE.DBCONTEXT-CLASS-NAME]
+                                - This will read all scripts to generaten table and then over the connection, the database server will be connected and the database with tables will be generated
+
+                         - e.g.
+                            - dotnet ef database update -c MVC_Code_First.Models.UCompanyContext
+
+- ASP.NET Core Identity Object Model
+       - Microsoft.AspNetCore.Identity.EntityFrameworkCore Package
+            - Foundation Package for Identity
+            - Classes
+                - IdentityDbContext
+                    - Connection to ASP.NET Core Security Database in SQL Server where Tables are created for Storing Identity Information
+                            - AspNetUsers, for Users Infromation
+                            - AspNetRole, for Roles Infromation
+                            - ApsNetUsertRoles, USers having Roles
+                            - ..and some other tables
+                - IdentityUser, an Entity class for Storing Users' Information
+                - IdentityRole, an Entity class for Storing Roles' Information
+                - UserManager<IdentityUser>, the class contains Method to List Users, Add,Remove, Edit Users' infromation
+                - RoleManager<IdentityRole>, the class contains Method to List Roles, Add,Remove, Edit Roles' infromation
+                - SignInManager<IdentityUser>, the class used to Manage SignIn and SingOut for Users
+       -  Microsoft.AspNetCore.Identity.UI Package
+               - A Read-to-Use Razor Views for Login, RegisterUser, LogOut, Change PAssword, Forget Password, etc.
+- Note: If using Visual Studio 2022 on Windows, the Right-CLick on Project, Select Add New Scaffold Item, Select Identity
+           - This will add following packages in the Project
+                - Microsoft.VisualStudio.Web.CodeGeneration.Design
+                - Microsoft.EntityFrameworkCore.Design
+                - Microsoft.AspNetCore.Identity.EntityFrameworkCore
+                - Microsoft.AspNetCore.Identity.UI
+                - Microsoft.EntityFrameworkCore.SqlServer
+                - Microsoft.EntityFrameworkCore.Tools
+
+- Scaffold Identity into an MVC project without existing authorization
+https://docs.microsoft.com/en-us/aspnet/core/security/authentication/scaffold-identity?view=aspnetcore-6.0&tabs=netcore-cli
+-- USe this Link
+https://docs.microsoft.com/en-us/aspnet/core/security/authentication/scaffold-identity?view=aspnetcore-6.0&tabs=netcore-cli#scaffold-identity-into-an-mvc-project-without-existing-authorization
+
+- Note: IF using Visual Studio Code on Linux and Mac or Visual Studio For MAck then followig the above link to add Authorization Identity in the exisitng MVC Project
+
+- The Default Identity Pages are Raor Views (not MVC Views), so to accept request for them add a middleware in Program.cs as app.MapRAzorPages()
+
+- Use 'AuthorizeAttribute' [Authorize] on Controller or Action Method to Apply the UserBased Authorization By default
+    - AuthorizeAttribute class having following Properties
+        - Roles property
+            - Check for User Roles to provide an access pof Controller or Action Method
+            - [Authorize(Roles="Role1,Role2,Role3,...")]
+        - Policy property
+            - USed to define Access of Controllers or Action methods to Group of Roles by grouping those roles into the Policy
+                - 'Policy-Based-Authorization' Available only in .NET Core, 5,6  
+    

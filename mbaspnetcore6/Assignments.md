@@ -117,4 +117,7 @@ Select * from Department;
         - Register the Dal DI Container of MVC App
         - Inject the DataAceess Layer in LogFilterAttribute class     
 
+# Date:24-Aug-2022
+
+1. Modify the AppExceptionFilterAttribute to Log Exception Messages in Exception Table in Database (same process like Storing Log in Database like assignment on Date:23-Aug)
             
