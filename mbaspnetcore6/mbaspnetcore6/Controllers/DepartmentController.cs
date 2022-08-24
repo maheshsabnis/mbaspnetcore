@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace mbaspnetcore6.Controllers
@@ -11,7 +12,9 @@ namespace mbaspnetcore6.Controllers
     /// Inject the Repository using Constructor Injection
     /// </summary>
     /// Apply the Action Filter
-  //  [LogFilter]
+    ///
+  //  [Authorize]
+    [LogFilter]
     public class DepartmentController : Controller
     {
         private readonly IServiceRepository<Department, int> deptRepo;
@@ -30,6 +33,8 @@ namespace mbaspnetcore6.Controllers
         /// Action Method
         /// </summary>
         /// <returns></returns>
+        /// Configuring the Security by using the Roles
+        [Authorize(Roles = "Admin,Manager,Clerk")]
         public IActionResult Index()
         {
             try
@@ -58,6 +63,8 @@ namespace mbaspnetcore6.Controllers
         /// Method to Create a new Department
         /// </summary>
         /// <returns></returns>
+        ///
+        [Authorize(Roles = "Admin,Manager")]
         public IActionResult Create()
         {
             var dept = new Department();
@@ -74,8 +81,8 @@ namespace mbaspnetcore6.Controllers
         [HttpPost]
         public IActionResult Create(Department dept)
         {
-            try
-            {
+            //try
+            //{
                 if (ModelState.IsValid)
                 {
                     if (dept.Capacity < 0)
@@ -91,21 +98,21 @@ namespace mbaspnetcore6.Controllers
                     // Stey on the Same Page
                     return View(dept);
                 }
-            }
-            catch (Exception ex)
-            {
-                // Retrning Error Page by Eliminating
-                // Hard-Coding
-                // the 'controller' and 'action' are comming from Route Expression, refer Program.cs
-                return View("Error", new ErrorViewModel()
-                {
-                    ErrorMessage = ex.Message,
-                    ControllerName = this.RouteData.Values["controller"].ToString(),
-                    ActionName = this.RouteData.Values["action"].ToString()
-                });
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    // Retrning Error Page by Eliminating
+            //    // Hard-Coding
+            //    // the 'controller' and 'action' are comming from Route Expression, refer Program.cs
+            //    return View("Error", new ErrorViewModel()
+            //    {
+            //        ErrorMessage = ex.Message,
+            //        ControllerName = this.RouteData.Values["controller"].ToString(),
+            //        ActionName = this.RouteData.Values["action"].ToString()
+            //    });
+            //}
         }
-
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(int id)
         {
             var respose = deptRepo.GetRecord(id);

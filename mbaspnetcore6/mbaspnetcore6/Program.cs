@@ -1,9 +1,42 @@
-﻿// WebApplication: The Web ENvironment that is common for
+// WebApplication: The Web ENvironment that is common for
 // Razor Views, MVC, and APIs
 // Build and Initialize the HTTP Pipeline for
 // 1. Registeing all Dependencies as Service
 // 2. Middlewares
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using mbaspnetcore6.Areas.Identity.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Read the Connection String from appSettings.json
+var connectionString = builder.Configuration.GetConnectionString("mbaspnetcore6IdentityDbContextConnection");
+
+// Register the DbContext class for Identity into the DI Container
+builder.Services.AddDbContext<mbaspnetcore6IdentityDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+// Configure the Identity Service for Authentication in the DI Container
+// AddDefaultIdentity(): Method for Registering 'User-BAsed' Authentication for
+// Current App in DI
+// SignIn.RequireConfirmedAccount = true: Means that the UserName (Email) MUST
+// be verified
+// AddEntityFrameworkStores<mbaspnetcore6IdentityDbContext>(): This will
+// COnfigire the SQL Server Database for Storing Users, Roles information
+// AddDefaultUI(): This will make sure that the Default UI for Register and Login is added for the Applciation 
+
+//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddEntityFrameworkStores<mbaspnetcore6IdentityDbContext>()
+//    .AddDefaultUI(); // Add this method explicitly
+
+
+
+/// The DI of for the Identity Service for User and Role Manager
+builder.Services.AddIdentity<IdentityUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<mbaspnetcore6IdentityDbContext>()
+    .AddDefaultUI(); // Add this method explicitly
+
 
 // The builder is a WebApplicationBuilder class
 // THis is used to Provide the 'Dependency Container'
@@ -51,7 +84,11 @@ builder.Services.AddSession(options => {
 // Lets Configure the Action Filter for the MVC COntrollers
 builder.Services.AddControllersWithViews(options =>
 {
-    options.Filters.Add(new LogFilterAttribute());
+   // options.Filters.Add(new LogFilterAttribute());
+    // options.Filters.Add(typeof(LogFilterAttribute));
+    // Register the Custom Exception Filter
+    // This will Resolve the IModelMetadataProvider
+    options.Filters.Add(typeof(AppExceptionFilterAttribute));
 });
 
 
@@ -73,6 +110,12 @@ app.UseStaticFiles();
 // Contains a Route Table
 app.UseRouting();
 
+// Middleware for Authentication
+app.UseAuthentication();
+// Middleware for Authorization
+app.UseAuthorization();
+
+
 // COnfigure the Session Middleware
 // THis will use Configuration for session
 // from Session Service from DI COntainer
@@ -89,6 +132,10 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Acept Request for Razor Views those are used for Identity
+app.MapRazorPages();
+
 
 app.Run();
 

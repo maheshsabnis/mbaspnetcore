@@ -8,12 +8,20 @@ namespace mbaspnetcore6.CustomFilters
     {
         private void Log(RouteData route, string status)
         {
-            string controller = route.Values["controller"].ToString();
-            string action = route.Values["action"].ToString();
+            if (route != null)
+            {
+                string controller = route.Values["controller"].ToString();
+                string action = route.Values["action"].ToString();
 
-            string message = $"Current status of execution is {status} in {controller} controller and it {action} action method ";
+                string message = $"Current status of execution is {status} in {controller} controller and it {action} action method ";
 
-            Debug.WriteLine(message);
+                Debug.WriteLine(message);
+            }
+            else
+            {
+                Debug.WriteLine("Some Log");
+            }
+            
         }
 
         public override void OnActionExecuting(ActionExecutingContext context)
