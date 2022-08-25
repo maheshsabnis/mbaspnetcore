@@ -38,6 +38,29 @@ builder.Services.AddIdentity<IdentityUser,IdentityRole>(options => options.SignI
     .AddDefaultUI(); // Add this method explicitly
 
 
+// Defining Policies
+// options, an instance of AuthorizationOptions class
+// that is used to define Policies
+builder.Services.AddAuthorization(options =>
+{
+    // policy, an instace of AuthorizationPolicyBuilder class
+    // Used to create policies based on Roles
+    options.AddPolicy("ReadPolicy", policy =>
+    {
+        policy.RequireRole("Admin", "Manager", "Clerk");
+    });
+    options.AddPolicy("CreatePolicy", policy =>
+    {
+        policy.RequireRole("Admin", "Manager");
+    });
+    options.AddPolicy("EditDeletePolicy", policy =>
+    {
+        policy.RequireRole("Admin");
+    });
+});
+
+
+
 // The builder is a WebApplicationBuilder class
 // THis is used to Provide the 'Dependency Container'
 // This provides the ApplicationBuilder

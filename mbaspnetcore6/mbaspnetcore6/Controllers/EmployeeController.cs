@@ -18,6 +18,14 @@ namespace mbaspnetcore6.Controllers
             this.deptRepo = deptRepo;
         }
 
+        public IActionResult List()
+        {
+            ResponseStatus<Employee> response = new ResponseStatus<Employee>();
+            response = empRepo.GetRecords();
+            return View(response.Records);
+        }
+
+
         public IActionResult Index()
         {
             ResponseStatus<Employee> response = new ResponseStatus<Employee>();

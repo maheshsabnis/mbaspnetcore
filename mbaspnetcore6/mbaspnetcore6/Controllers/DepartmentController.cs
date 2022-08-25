@@ -20,7 +20,6 @@ namespace mbaspnetcore6.Controllers
         private readonly IServiceRepository<Department, int> deptRepo;
 
        
-
         /// <summary>
         /// Injection
         /// </summary>
@@ -34,7 +33,8 @@ namespace mbaspnetcore6.Controllers
         /// </summary>
         /// <returns></returns>
         /// Configuring the Security by using the Roles
-        [Authorize(Roles = "Admin,Manager,Clerk")]
+        // [Authorize(Roles = "Admin,Manager,Clerk")]
+        [Authorize(Policy = "ReadPolicy")]
         public IActionResult Index()
         {
             try
@@ -64,7 +64,8 @@ namespace mbaspnetcore6.Controllers
         /// </summary>
         /// <returns></returns>
         ///
-        [Authorize(Roles = "Admin,Manager")]
+        // [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Policy = "CreatePolicy")]
         public IActionResult Create()
         {
             var dept = new Department();
@@ -112,7 +113,8 @@ namespace mbaspnetcore6.Controllers
             //    });
             //}
         }
-        [Authorize(Roles = "Admin")]
+        //  [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "EditDeletePolicy")]
         public IActionResult Edit(int id)
         {
             var respose = deptRepo.GetRecord(id);
@@ -148,7 +150,8 @@ namespace mbaspnetcore6.Controllers
                 return View(dept);
             }
         }
-
+        //[Authorize(Roles = "Admin")]
+        [Authorize(Policy = "EditDeletePolicy")]
         public IActionResult Delete(int id)
         {
             var respose = deptRepo.DeleteRecord(id);
@@ -172,5 +175,17 @@ namespace mbaspnetcore6.Controllers
             // Navigate to an Index() action method of the Employee Controller
             return RedirectToAction("Index", "Employee");
         }
+
+
+
+
+        public IActionResult CustomTag()
+        {
+            
+                var response = deptRepo.GetRecords();
+                return View(response.Records);
+            
+        }
+
     }
 }
