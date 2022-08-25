@@ -504,4 +504,34 @@ https://docs.microsoft.com/en-us/aspnet/core/security/authentication/scaffold-id
         - Policy property
             - USed to define Access of Controllers or Action methods to Group of Roles by grouping those roles into the Policy
                 - 'Policy-Based-Authorization' Available only in .NET Core, 5,6  
-    
+- Policy BAsed Authorization
+    - AN ENhancements in the Role-Based-Security to provide a Hybrid-Access of the application by creating Groups of Roles and applying them of the Resources (Controllers)
+    - The 'AddAuthrization()' Service method is used to define Policies
+
+
+- MVC Views Tag Helpers
+    - Provide a Behavior to HTML ELements when the Views (Page) is posted back to the server
+    - asp-for: Data Binding aka Model BIndig
+    - asp-action: Request to Action Method
+    - asp-controller: Request to COntroler
+    - asp-items: Load collection and generate HTML UI
+    - asp-validation-for: Validate the Model property on Server and sho Error Message for that Model property
+    - Microsoft.AspNetCore.Mvc.TagHelpers, is the assembly where all Tag-Helper classes are defined
+        - Teh Tag Helper will be executed on Server and will define a rendering for HTML element by adding new attribute to the exisitng HTML ELement or Generating HTML Element, this is really lightweight
+    - TagHelper the base class
+        - Process(TagHelperContext, TagHelperOutput)
+            -  TagHelperContext: USed to Execute the View on the server and will be responsible ti execute the Tag-Heper and generate HTML behavior
+            - TagHelperOutput: Used to create HTML String as output and this will be written into the response
+        - Once the Custom Tag Helper is created, its assembly must be registered in _ViewImports using '@addTagHelper'
+- MVC Views with Partial Views
+    - Page Views
+          - They matches their Name with the Action Method Name
+            - e.g. Index() action method the View is Index.cshtml
+          - These views accepts Model to show data and access data from End-User
+    - Partial View
+        - a Reusable view across various Page Views
+        - these views are pass the Model data from the Model of the Page View
+        - they also have .cshtml as extension
+        - They do not requested seperately insted accessed only using the Page View
+    - ViewComponent
+        - More USefule with Blazor
