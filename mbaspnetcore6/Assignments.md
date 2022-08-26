@@ -152,4 +152,5 @@ Select * from Department;
             - Manager Can Approve
             - Administrator Can Make it Ready for Dispatch
 
-            
+# Date: 26-Aug-2022
+1. Modify the ASp.NET Core MVC app by using Data Access Layer implemeneted using the Disconnected Architecture (Submit on 02-Sept-2022)            

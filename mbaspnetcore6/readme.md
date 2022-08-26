@@ -535,3 +535,177 @@ https://docs.microsoft.com/en-us/aspnet/core/security/authentication/scaffold-id
         - They do not requested seperately insted accessed only using the Page View
     - ViewComponent
         - More USefule with Blazor
+
+- Working with File Resources
+    - IFromFile Interface
+        - This is used to accept the BLOB resource uploaded by the Client using HTTP Protocol
+        - We use Http 1.1 as well as Http 2.0
+            - Multi-Part BLOB Resouces posted over HTTP
+     - For Uploading the File as well as Downloading the the file the 'StaticFile()' middleware MUST be added in the HTTP Request Pipeline
+     - Make sure that the Folder where files are stored are accessible to the MVC App
+            - Use the 'IWebHostEnvironment'
+                -  This is a contract,  that will be injected into the Constroller to connect with File Repository
+                - Use 'WebRootPath' to connect with the folder
+            - Use FileStream
+                - The Class under System.IO to work with Local File System
+     - HTML form tag
+            - The 'enctype', the format taht is used to POST data to Server
+            - input as File
+                - multipart/form-data
+                    - The File will be Chunked and will be provided to HTTP POST request
+            
+     - UTL Encoded TYpe
+            Name=Value&Name=Value
+
+# ADO.NET Diconnected
+
+- From Client App Connect to Database
+- Get the Data form database which the Client wants to work with
+- Store data into the Client's Memory
+- Disconnect the Client From Database
+
+- ADO.NET Object Model for Disconnected Apps
+    - System.Data Namespace
+        - DbConnection
+            - Abstract Base class for Connection
+        - DbCOmmand
+            - Abstract base class for Command Objects
+        - DataReader
+            - BAse class for Data Readers
+        - DataSet
+            - The Client-Side database to store data in Client's Memory
+            - Minuature of Database in Client's Memeory
+    - DataSet Technical Structure
+        - DataSet is Collection of
+            - DataTables
+                - DataTableCollection class
+                    - DataTable Class
+                        - DataColumnCollection class
+                               - DataColumn class     
+                        - DataRowCollection class
+                               - DataRow class 
+            - DataViews
+                - DataVeiwsCollection class
+                    - DataView class
+            - DataRelations
+                - DataRelationColleciton class
+                    - DataRelation class
+- Object Programmiong
+    - COnsider Ds is an instance of DataSet
+        - DataSet Ds = new DataSet();
+    - Read all Tables from DataSet
+        - Ds.Tables;
+    - Specific Table
+        - Ds.Tables[index] OR Ds.Tables["Name-AS-String"]
+    - Adding a New Row in a Table inside DataSet
+        - DataRow Dr = Ds.Tables[IDNEX | NAME].NewRow();
+        - Add Values for Each COlumn in DataRow
+            - Dr[INDEX | COLUMN-NAME] = VALUE-FOR-COLUMN;
+        - Add this row in Rows Collection
+            - Ds.Tables[IDNEX | NAME].Rows.Add(Dr);
+- Data Adapter
+    - An Object that is used to Managed Commection with Database, Get data from Database Table and Fill Data into the DataSet in CLient's Memory
+        - E.g.
+            - DataAdapter ad = new Adapter(Connection Object, Select Query for the table);
+            - DataSet Ds = new DataSet();
+            - Ad.Fill(Ds, "Table-Name");
+                - Fill Data into the DataSet
+    - An Object that is responsible to Update Data in Database
+        - The 'CommandBuilder' is the Object that will accept 'Adapter' as input parameter and will generate Command Objects for DML Operations
+              - InsertCommand, UpdateCommand, and DeleteCommand
+              - CommadnBuilder builder = new CommandBuilder(Ad);
+        - Command Builder ask the Adpater to Update Data from DataSet to Database
+            - Ad.Update(Ds, "Table-Name")
+
+- Code-Base Objects
+    - Syatem.Data
+        - DataSet
+        - DataColumn
+        - DataRow
+        - DataRelation
+    - System.Data.SqlClient
+        - SqlConnection
+        - SqlDataAdapter
+        - SqlCommandBuilder
+- Pseudo code
+    - Connect to Database
+    - Create Adapter Instance pass the Connection Object and 'Plain' Select Statement to it
+        - SqlDataAdapter ad= new SqlDataAdapter(Conn, "Select * from Table");
+            - Note: Adapter will generate Insert, Update, and Delete Commands only when the Select Statement is plain Select Statement
+            - The Table MUST have Primary Key
+    - Crerate DataSet Instance
+        - DataSet Ds = new DataSet()
+    - Fill Data into DataSet
+        - Ad.Fill(Ds,"Table");
+    - Perform All Read/Write Operations on DataSet
+        - Adding New Row in Table
+              - Create a DataRow Instance that popint to NewRow() in DataTable in DataSet
+                    - DataRow DrNew = Ds.Tables["Table"].NewRow();
+              - Add Data to Each columm pointed by the Row
+                    - DrNew["Column"] = Value;
+              - Add Row in Rows Collection of DataTable
+                    - Ds.Tables["Table"].Rows.Add(DrNew);
+              - Create Command bUilder Instance and Pass Adapter to it
+              - Call Update Method of the Adapter to Updatae Data back to Database
+                - Ad.Update(Ds,Table);    
+
+        - Find Row From Table
+             - DataRow DrFind = Ds.Tables["Table"].Rows.Find(PRIMARY-KEY-VALUE);    
+        - Update Row
+             - Find Row based on Primary Key
+             - Update Row Values
+             - Create Command Builder
+             - Adapter.Update       
+        - Delete Row
+             - Find Row Using Primary Key
+             - Call Delete() method on Found Row object
+             - Create Command Builder
+             - Adapter.Update      
+    - Create an instance of SqlCommandCbuilder and pass Adapter to it
+        - SqlCommandBuilder builder= new SqlCommandBuilder(Ad);
+    - Update the Data
+        - Ad.Update(Ds, "Table");
+- Best Practices while using Disconnected Architecture
+    - Make sure that the Client will acept 'Only-the-table' granted to him
+        - Plain Select Statement
+            - Select * from Customer
+                - The Customer Table will be gratnted for Read/Wrtite Operations for that specific Client only
+        - This will avoid the possibility of Conncurrency in Data Access
+    - SQL Server 2005+
+        - Column Level Access Rights
+                - The User will mention only those columns which can be Written by him
+- DataSet
+    - Store Data in Xml Format
+    - GetXml() method to See Data in the form of Xml
+    - GetXmlSchema() method to See the Table Schem in Xml form
+
+    - Two-Types of DataSet
+        - UnTyped DataSet (Default)
+            - Table Schema will be loaded into DataSet without any Key COnstraints e.g. Primary Key, Foreign Key, ect.
+            - Search Operation for Rows using Primary key is not possible by default
+            - We have to define a primaty key programatically (Not Recommended) 
+        - Typed DataSet
+            - Tables with its Constraints will be loaded into the DataSet
+            - Convert UnTyped DataSet into Typed DataSet
+            - Use the 'MissingSchemaAction' property of the Adapter
+                - Adapter.MissingSchemaAction = MissingSchemaAction.AddWithKey;
+                    - Add Key Constraints into the DataSet for the Table
+- ADO.NET Changes
+    - MultipleActiveResultSets (MARS), ADO.NET 2.0
+        - By default only one data reader is active over a connection
+        - To Open Multiple Data Readers, the ConnecitonString MUST have follwing
+            -
+"Data Source=127.0.0.1;Initial Catalog=UCompany;User Id=sa;Password=MyPass@word;MultipleActiveResultSets=True"
+
+    - Asynchronous Connections with Database Server, Initially INtroduced in ADO.NET 2.0 and later in .NET 4.5 we were provided with Async Metghods
+        - "Data Source=127.0.0.1;Initial Catalog=UCompany;User Id=sa;Password=MyPass@word;Asynchronous Processing=True"
+            - Cmd.ExecureReaderAsync()
+            - Cmd.ExecuteNonQueryAsync()
+            - Cmd.ExecuteScalarAsync()
+            - OpenAsync(), CloseAsync()
+ 
+
+    
+
+  
+        
