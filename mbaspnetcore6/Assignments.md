@@ -153,4 +153,23 @@ Select * from Department;
             - Administrator Can Make it Ready for Dispatch
 
 # Date: 26-Aug-2022
-1. Modify the ASp.NET Core MVC app by using Data Access Layer implemeneted using the Disconnected Architecture (Submit on 02-Sept-2022)            
+1. Modify the ASp.NET Core MVC app by using Data Access Layer implemeneted using the Disconnected Architecture (Submit on 02-Sept-2022)
+
+# Date: 29-Aug-2022
+
+1. Create a EmployeeController for Performing CURD Operations of EMployee (Today)
+2. CReate a SearchAPI Controller that will have following method (Today)
+     - Search(deptname,condition, designation)
+        - If condition=="AND" then return all EMployees for the specific deptname and Designation
+        - If condition == "OR", then returns all employeed for deptname or designation
+        - If the deptname is not found then do not return any employees although there are employees for the designaiton
+        - If designation is not found then return all employees for the deptname
+        - MAke sure that employees are returns sorted by EmpName
+3. Write a Middleware that will log following Information into database (Tomorrow)
+        - Request Date
+        - request Time
+        - The Http Reqquest Type
+        - The COntroller Mentioned in the URL
+        - (Optinal) The Data in URL Parameter if any as well as Request Body if any
+                - HTTP Body will have data in POST and PUT Request
+                - URL Paraeter will have data in Get with id, PUT method and Delete Method  

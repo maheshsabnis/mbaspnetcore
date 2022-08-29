@@ -1,4 +1,4 @@
-﻿# ASP.NET Core 6
+﻿# ASP.NET Core 6 MVC
 
 1. Eco-System For Building Modern Web Apps
     - Object Models
@@ -705,7 +705,71 @@ https://docs.microsoft.com/en-us/aspnet/core/security/authentication/scaffold-id
             - OpenAsync(), CloseAsync()
  
 
-    
+# Representational-State-Transfer (REST)
+    - The JSON based Data COmmunication Services
+    -   Representational: The Service is available on 'PUBLIC-ENDPOINTS', no Explicit Contract (Methods aka Operations), instaed data is communicated over HTTP Requests (GET/POST/PUT/DELETE)
+    - State: Data, the JSON Data
+    - Transfer: Communication of DATA
 
-  
-        
+    - REST: Data is Communicated over a Public Endpoints over HTTP Methods based communication   
+- REST APIs using ASP.NET Core-EcoSystem
+    - Same Pipeline
+    - builder.Services.AddWithControllers(), a Service method for REST APIs only
+    - The 'ControllerBase' is the Base class for API Controller
+    - The 'ApiControllerAttribute' class, applied on Controller class as Attribute [ApiController] to map JSON data posted from Client App to .NET CLR object for POST and PUT Operations
+    - Security is performed using Token-Based-Authentication
+        - User Login
+        - Generate Token
+        - Authorize user based on Token
+    - The COntroller class contains Action Methods, those MUST be applied with following ateributes
+            - [HttpGet], for Get Request
+            - [HttpGet("{id}")], for Get Request with 'id' as URL Parameter
+            - [HttpPost] for Post request
+            - [HttpPut("{id}")], for Put request to update the recod by searching it based on 'id' URL Parameter
+            - [HttpDelete("{id}")], for Delete request to delete the record by searching it based on 'id' URL Parameter
+    - Each Action Method returns, IAcitonResult as follows
+        - Ok()
+        - Ok(Object)
+        - NotFound()
+        - NoContent()
+        - .... an other HTTP Methods
+- COnfiguring API COntroller class
+    - Inject all dependencies in Constructor
+    - MAke sure that the Response form Each Action Method is the CLR Object
+    - API Controller  by default serialze the CLR Object in Camel-Casing, e.g. For DeptNo property of CLR object the Serialization will be 'deptNo', to serialze the property as it is format, modify the builder.Services.AddController() to nullify the JSON Serialization for Property Names
+```` csharp
+builder.Services.AddControllers()
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.PropertyNamingPolicy = null;
+        });
+````
+
+
+- Model Binding aka Parameter Binding with HTTP Action Methods in API Controller class
+    - Read data from HTTP Request and Map with CLR Object
+    - By defaut for POST and PUT Request, it is done by ApiController Attribute
+
+    - Cases
+        - What is Data is send to API Controller
+            - FromBody, a Default HTTP Request for POST and PUT, this is Recommended
+                - This is implicitly handled using ApiController attribute
+            - FromRoute parameter Of HTTP Request
+                  - http://server/controller/val1/Val2/....
+                  - http://server/Department/299/yeyey/ywef/4656  
+            - FromQuery parameter Of HTTP Request
+                - http://server/controller?Name=Value
+                - http://server/Department?DeptNo=299&DeptName=yeyey&Location=ywefv&Capacity=4565
+            - FromForm of HTTP Request
+                    - NAme=Value Pair
+- If the API Controllers wants to have One Global Exception Handler for all action methods across all controllers then instead of using Action FIlters use the Middleware
+- Creation of Custom Middlewres
+    - The class that contains logic for Custom Moddleware MUST be constructor Injected with 'RequestDelegate" delegate
+    - This class MUST have an 'InvokeAsync(HttpContext)' method Implemented
+          - The HttpContext reoresents the current HTTP Request Pipeline
+          - This method is invoked by RequestDelegate implecitly
+          - This method contans logic for Custom Middleware
+    - Create a Class that will register the above class as Custom Middleware in the Middleware pipeline using 'IApplicationBuilder'
+        - IApplicationBuilder, the contract interface tsh is used to build a Middleware pipeline for the current application
+        - IApplicationBuilder.UseMiddleware<T> extension method
+            - The 'T' is the class tat contains logic for custom Middleware         
