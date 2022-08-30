@@ -1,0 +1,14 @@
+version: '3.6'
+services:
+  customerservice:
+    container_name: customercontainer # container name which will host image
+    ports:
+        - 8081:80 # local-machine-port:container-port (exposed in Dockerfile)
+    build: customerservice # folder name where Dockerfile is present
+    image: customerservice:v1 # image name that is already present, if not present then it will be created
+  ordersservice:
+    container_name: ordercontainer
+    ports:
+        - 8082:80
+    build: ordersservice # folder name where Dockerfile is present
+    image: ordersservice:v1 # image name that is already present
