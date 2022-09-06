@@ -46,6 +46,8 @@
                     - docker build . -t myimage:v1    
                 - If using  MacBook with M1 Chip, then commadn will be
                     - docker build --pull --build-arg ARCH=arm64v8 -t IMAGE-NAME]:[TAG] .
+
+                    - e.g. docker build --pull --build-arg ARCH=arm64v8 -t aspnetapp .
             
                         
             - Command to Run the Docker Image in the Container
@@ -147,6 +149,8 @@
     - Developed by Google and now available as a part of
         - Cloud Native Computing Foundation (CNCF)
 - Physical Core Concepts
+    - Namespace
+        - Logical gouping for the Deploymeny in the cluster
     - Cluster
          - A COllection of Multiple Nodes present for deployment of Microservices based Apps
             - Managed by K8s with Networking
@@ -208,10 +212,36 @@
         - Make sure that the AWS ECR and Azute ACR are created first
         - If using Docker-Hub then make sure that you have login on Hub
     - Tag the Image to the Repopsitory Name
+        - docker tag custserv:v1 [REPOSITORY-NAME]/custserv:v1
     - Push Image to repository
     - Create Deployment.yaml file for POD, Container, and Resource configuration
     - Create Service.yaml file for Service COnfiguration with Communication Port e.g. ClusterIP, NodePort, or LoadBalancer
     - Deploy Deploymenyt.yaml and then Service.yaml
         - Note: You can write Deployment and Service configuration in Same yaml file
-    - Access the Service  
+    - Access the Service
+
+# Kubernetes Deployment Commands
+- We need 'kubectl' tool, this is directly configured when we install Docker-Desktop
+- Deploying file that contains the Deployment configuration
+    - Go to the File path form Terminal Window OR Command Prompt OR Git Bash
+    - kubectl apply -f deployment.yaml
+            - The deployment.yaml cond POD, Containers and Image configuration
+- Deploying Service File that exposes ports
+    - kubectl apply -f service.yaml
+            - The service.yaml contains the ports and Communication Type e.g. NodePoty, LoadBalancer, ClusterIP
+        - NOTE: Deployment and Service COnfioguration can be ther in a Single yaml file    
                 
+- Get all pods
+    - kubectl get pods
+- Get all Services
+    - kubectl get services | kubectl get svc
+- Get all Services with port info and deploymenty name with IP address (Detailed info)
+    - kubectl get services -o wide
+- If POD Fails then use the following command to get POD Name and then its details
+    - kubectl get pods
+        - thid will give pod name and its status e.g. Running, CrashDump, ErrorImagePullBack, etc.
+    - kubectl describe pods [POD-NAME-FROm-ABOVE-COMMAND]
+- Delete Deployment
+    - if Service.yaml and Deploymenty.yaml are different then first delete Service.yaml; and then delete Deployment.yaml
+    - kubectl delete -f [FILE].yaml
+  

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment # Service Deployment, PODs, Containers, Images, and Resources
+metadata:
+  name: azure-micro # Deployment Name
+spec: # Deployment Specification
+  replicas: 1 # POD Replicas, How many PODs are created in Node with Contaners in it
+  selector: # Used by the Cluster to manage the Deployment of the Service in the POD
+    matchLabels:
+      app: myservicedemo1app  # Deployment Application Name that will be used by the Service Deployment
+  template: # A Standard Configuration for Containers and Images in it
+    metadata:
+      labels:
+        app: myservicedemo1app # The Template Deployment Name ( a Deployment Name in Container)
+    spec: # The Container Specifications
+      containers:
+      - name: myservicedemo1app # Container Name
+        image: mast007/custserv:v1 # The Image that will be fetched from Repopsitory and will be deployed in Container
+        resources: # Physical Resource Specifications
+          requests:
+            cpu: 100m # CPU Utilizamion ( the Amount of Minimum CPU Capacity requeired for Service Deployment ) 
+            memory: 128Mi # Minimum RAM Required for the COntainer to run the Service
+          limits: # Max limit, if this is crossed then use the Internal ROuting to move to next POD having same image in Replicaset
+            cpu: 250m
+            memory: 256Mi
+        ports: # Container Exporsed Ports
+        - containerPort: 6004
+---
+apiVersion: v1 # Service Deployment
+kind: Service 
+metadata: 
+  name: myservicedemo1app # USes the Same Deployment Name name that will use the Same Deployment Specification for service
+spec: # The Cluster Specifications for Accepting Requests from Outside or externally
+  type: NodePort # NodePort, ClusterIP (Default), and LoadBalancer (For Cloud)
+  ports: # Port Mapped by the Cluster with the Port Exposed by the Container
+  - port: 80 # The Port 80 will be mapped with the Port exposed by the Containert
+             # 80 will be mapped with 6004 (The Container Port)
+             # The Nodeport will ask the K8s cluster 
+             # to allocate a port for acepting requests from External services 
+             # (Client App or other Services) 
+             # This will take a Port allocated by Cluster and map it with Port 80
+  selector:
+    app: myservicedemo1app # The Service Name
