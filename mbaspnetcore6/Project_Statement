@@ -4,7 +4,7 @@ Based on the Topics we have discussed, not its time for use to implement all the
 
 	a: A Patient Visits to the Hospital and is first looked after by the OPD Department. This department has doctors, brother, and Nurses.
 	b: The Doctor monitor the patient and then decides if he needs to be admitted into the hospital.
-      c: If the Patient need to to be admitted in the hospital, then the bill of the patient is calculated and patient is dispatched, for this process the following two processed MUST be followed
+      c: If the Patient need not to be admitted in the hospital, then the bill of the patient is calculated and patient is dispatched, for this process the following two processed MUST be followed
 		- Register The Patient by collecting the following Information
 				- First Name, Middle NAme, Last Name
 				- Mobile No.
@@ -19,7 +19,7 @@ Based on the Topics we have discussed, not its time for use to implement all the
 				- Gender
 				- AgeType
 					- Major, Minor
-		- The Bill is Calculated as OPD Fees, Doctor Fees, Patient Diagnose/Monitor Fees (e.g. Dress, B.P. ECG, etc)
+		- The Bill is Calculated as OPD Fees, Doctor Fees, Patient Diagnose/Monitor Fees (e.g. Dressing, B.P. ECG, etc)
 
 	d: If the Patient needs to be admitted into the hospital then the IPD Process Starts as follows
 		- Assign Doctor, Ward, and Room to Patient
@@ -27,10 +27,11 @@ Based on the Topics we have discussed, not its time for use to implement all the
 	e: The IPD patient (aka Admitted Patient) will have following Services
 			- Assigned Doctor
 			- Nurse
-			- Room (General (5-to-10 Beds), Shared (1-to-5 Beds), Special (with or w/o AC) )			- Medical Store Access
+			- Room (General (5-to-10 Beds), Shared (1-to-5 Beds), Special (with or w/o AC) )			
+			- Medical Store Access
 			- Cantees Access
 	f: When The IPD Patient is Dischanged the bill MUST be calculated based on the Following changed
-		- Room Charges
+		- Room Charges based on No. Of Days
 		- Nurse Charges
 		- Doctor CHarges Based on Visits
 		- Medicines Charges e.g. Tables/Capsules given to patient, B.P. Check, Blood Check, Radiology Charges (If any), Injection Changes
@@ -44,5 +45,6 @@ Based on the Topics we have discussed, not its time for use to implement all the
 		- The Total Collection Per Month 
 		
 
+Create SQL Server Tables, ASP.NET Core APIs  and UI with React.js and there will be Security 
 
  
