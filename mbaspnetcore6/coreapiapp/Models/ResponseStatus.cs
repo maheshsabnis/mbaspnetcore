@@ -14,6 +14,7 @@ namespace coreapiapp.Models
         public string Message { get; set; } = string.Empty;
         public IEnumerable<T> Records { get; set; } = null;
         public T Record { get; set; }
+        public string UserName { get; set; }
     }
 }
 
